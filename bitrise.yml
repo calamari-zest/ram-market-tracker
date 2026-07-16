@@ -1,0 +1,54 @@
+format_version: '13'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+workflows:
+  android-build:
+    steps:
+    - activate-ssh-key@4:
+        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone@6: {}
+    - script@1:
+        title: Install Node.js
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -e
+            curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+            apt-get install -y nodejs
+    - script@1:
+        title: Install dependencies
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -e
+            npm install
+    - script@1:
+        title: Build web app
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -e
+            npm run build
+    - script@1:
+        title: Sync Capacitor
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -e
+            npx cap sync android
+    - script@1:
+        title: Build APK
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -e
+            cd android
+            ./gradlew assembleDebug
+    - deploy-to-bitrise-io@2: {}
+    - script@1:
+        title: Copy APK to deploy directory
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -e
+            cp android/app/build/outputs/apk/debug/app-debug.apk $BITRISE_DEPLOY_DIR/
