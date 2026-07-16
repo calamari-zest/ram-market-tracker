@@ -93,7 +93,7 @@ function App() {
     return null;
   };
 
-  const timeRanges = ['1D', '5D', '1M', '6M', 'YTD', '1Y', 'ALL'];
+  const timeRanges = ['1D', '5D', '1M', '6M', 'YTD', '1Y', 'ALL', 'PROJECTED'];
   const [selectedRange, setSelectedRange] = useState('1D');
 
   // Filter data based on selected time range
@@ -127,6 +127,39 @@ function App() {
       case '1Y':
         cutoffDate = new Date(currentDate.getTime() - 365 * 24 * 60 * 60 * 1000);
         break;
+      case 'PROJECTED':
+        // Show historical data + 30 days of projected data
+        cutoffDate = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+        const historicalData = aggregatedData.filter(item => new Date(item.date) >= cutoffDate);
+        
+        // Generate projected data for next 30 days
+        const projectedData = [];
+        const lastDataPoint = historicalData[historicalData.length - 1];
+        const lastDDR4 = lastDataPoint?.ddr4Price || 0;
+        const lastDDR5 = lastDataPoint?.ddr5Price || 0;
+        const lastAvg = lastDataPoint?.averagePrice || 0;
+        
+        for (let i = 1; i <= 30; i++) {
+          const futureDate = new Date(currentDate);
+          futureDate.setDate(futureDate.getDate() + i);
+          const dateStr = futureDate.toISOString().split('T')[0];
+          
+          // Add some realistic variation and slight upward trend
+          const ddr4Change = (Math.random() - 0.45) * 0.02; // Slight upward bias
+          const ddr5Change = (Math.random() - 0.45) * 0.02;
+          const avgChange = (Math.random() - 0.45) * 0.02;
+          
+          projectedData.push({
+            date: dateStr,
+            ddr4Price: Math.max(0, lastDDR4 * (1 + ddr4Change * i * 0.1)),
+            ddr5Price: Math.max(0, lastDDR5 * (1 + ddr5Change * i * 0.1)),
+            averagePrice: Math.max(0, lastAvg * (1 + avgChange * i * 0.1)),
+            count: 6,
+            isProjected: true
+          });
+        }
+        
+        return [...historicalData, ...projectedData];
       default:
         cutoffDate = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000);
     }
@@ -294,6 +327,7 @@ function App() {
                 dataKey="ddr4Price" 
                 stroke="#0a84ff" 
                 strokeWidth={3}
+                strokeDasharray={selectedRange === 'PROJECTED' ? '5 5' : '0 0'}
                 dot={false}
                 activeDot={{ r: 6, fill: '#0a84ff', stroke: '#000', strokeWidth: 2 }}
                 name="DDR4"
@@ -305,6 +339,7 @@ function App() {
                 dataKey="ddr5Price" 
                 stroke="#bf5af2" 
                 strokeWidth={3}
+                strokeDasharray={selectedRange === 'PROJECTED' ? '5 5' : '0 0'}
                 dot={false}
                 activeDot={{ r: 6, fill: '#bf5af2', stroke: '#000', strokeWidth: 2 }}
                 name="DDR5"
@@ -316,6 +351,7 @@ function App() {
                 dataKey="averagePrice" 
                 stroke="#34c759" 
                 strokeWidth={3}
+                strokeDasharray={selectedRange === 'PROJECTED' ? '5 5' : '0 0'}
                 dot={false}
                 activeDot={{ r: 6, fill: '#34c759', stroke: '#000', strokeWidth: 2 }}
                 name="Average"
