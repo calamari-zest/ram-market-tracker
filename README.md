@@ -11,28 +11,16 @@ A React-based web application that tracks RAM prices with real-time updates, his
 - **Apple Stocks Design**: Dark theme with clean, modern interface
 - **Responsive**: Works on desktop, tablet, and mobile devices
 
-## For End Users - Getting the Android APK
+## For End Users
 
-**No installation required!** Just download and install the APK.
+### Web Version (Recommended)
+Simply open the web app in your browser - no installation required:
+- Works on any device with a web browser
+- Can be added to home screen for app-like experience
+- No APK or installation needed
 
-### Option 1: Download from GitHub Actions (Recommended)
-1. Go to the GitHub repository's "Actions" tab
-2. Select the latest "Build Android APK" workflow run
-3. Scroll down to "Artifacts" section
-4. Download `ram-market-tracker-apk`
-5. Extract and install the APK on your Android device
-
-### Option 2: Direct APK Download
-1. Download the latest APK from the Releases section
-2. Enable "Install from unknown sources" in Android settings
-3. Tap the APK file to install
-
-### Installation Steps
-1. Download the APK file
-2. On your Android device, go to Settings > Security
-3. Enable "Unknown sources" or "Install unknown apps"
-4. Open the APK file and tap "Install"
-5. Once installed, open the app from your home screen
+### Android APK
+If you need a native Android app, you can build the APK manually or use a cloud build service.
 
 ## For Developers
 
@@ -48,7 +36,7 @@ npm run build
 ```
 
 ### Building Android APK Locally
-Requires Java JDK 17+ and Android SDK:
+Requires Java JDK 11+ and Android SDK:
 ```bash
 npm install
 npm run build
@@ -57,8 +45,13 @@ cd android
 ./gradlew assembleDebug
 ```
 
-### Cloud Build (Recommended)
-Push to GitHub and the APK will be automatically built via GitHub Actions.
+The APK will be at: `android/app/build/outputs/apk/debug/app-debug.apk`
+
+### Cloud Build
+To build APK in the cloud, you can:
+1. Use GitHub Actions (manual trigger only)
+2. Use Bitrise, CircleCI, or similar CI/CD services
+3. Use online Android build services
 
 ## Project Structure
 - `src/App.jsx` - Main React component
