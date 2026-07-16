@@ -15,9 +15,11 @@ A React-based web application that tracks RAM prices with real-time updates, his
 
 ### Web Version (Recommended)
 Simply open the web app in your browser - no installation required:
-- Works on any device with a web browser
+- **Live URL:** https://calamari-zest.github.io/ram-market-tracker/
+- Works on any device with a web browser (Android, iOS, desktop)
 - Can be added to home screen for app-like experience
 - No APK or installation needed
+- Zero setup required
 
 ### Android APK
 If you need a native Android app, you can build the APK manually or use a cloud build service.
