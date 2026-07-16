@@ -1,0 +1,38 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/android:2023.08
+    
+    steps:
+      - checkout
+      
+      - run:
+          name: Install Node.js
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+      
+      - run:
+          name: Install dependencies
+          command: npm install
+      
+      - run:
+          name: Build web app
+          command: npm run build
+      
+      - run:
+          name: Sync Capacitor
+          command: npx cap sync android
+      
+      - run:
+          name: Build APK
+          command: |
+            cd android
+            chmod +x gradlew
+            ./gradlew assembleDebug --stacktrace
+      
+      - store_artifacts:
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          destination: ram-market-tracker.apk
