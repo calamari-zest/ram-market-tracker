@@ -37,13 +37,24 @@ workflows:
             set -e
             npx cap sync android
     - script@1:
-        title: Build APK
+        title: Set up Android environment
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -e
+            export ANDROID_HOME=$ANDROID_HOME
+            export PATH=$PATH:$ANDROID_HOME/platform-tools
+            export PATH=$PATH:$ANDROID_HOME/tools
+            echo "Android SDK location: $ANDROID_HOME"
+    - script@1:
+        title: Build APK with Gradle
         inputs:
         - content: |
             #!/bin/bash
             set -e
             cd android
-            ./gradlew assembleDebug
+            chmod +x gradlew
+            ./gradlew assembleDebug --stacktrace
     - deploy-to-bitrise-io@2: {}
     - script@1:
         title: Copy APK to deploy directory
