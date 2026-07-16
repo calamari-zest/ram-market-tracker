@@ -47,11 +47,20 @@ cd android
 
 The APK will be at: `android/app/build/outputs/apk/debug/app-debug.apk`
 
-### Cloud Build
-To build APK in the cloud, you can:
-1. Use GitHub Actions (manual trigger only)
-2. Use Bitrise, CircleCI, or similar CI/CD services
-3. Use online Android build services
+### Cloud Build (Recommended for APK)
+**Using Bitrise (Recommended):**
+1. Go to https://bitrise.io and sign up for free
+2. Click "Add new app" and select GitHub
+3. Connect your GitHub account and select this repository
+4. Bitrise will automatically detect the `bitrise.yml` file
+5. Click "Start a build" to generate the APK
+6. Download the APK from the build artifacts
+
+**Using GitHub Actions (Manual):**
+1. Go to the Actions tab in GitHub
+2. Select "Build Android APK" workflow
+3. Click "Run workflow" to manually trigger a build
+4. Download the APK from artifacts once complete
 
 ## Project Structure
 - `src/App.jsx` - Main React component
